@@ -39,6 +39,22 @@ resource "kubernetes_deployment" "redditproducer" {
             mount_path = "/app/secrets/"
             read_only = true
           }
+          env {
+            name  = "REDDIT_CLIENT_ID"
+            value = var.REDDIT_CLIENT_ID
+          }
+          env {
+            name  = "REDDIT_CLIENT_SECRET"
+            value = var.REDDIT_CLIENT_SECRET
+          }
+          env {
+            name  = "REDDIT_USER_AGENT"
+            value = var.REDDIT_USER_AGENT
+          }
+          env {
+            name  = "REDDIT_REFRESH_TOKEN"
+            value = var.REDDIT_REFRESH_TOKEN
+          }
         }
 
         volume {
