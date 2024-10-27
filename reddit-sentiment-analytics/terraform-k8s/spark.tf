@@ -30,8 +30,8 @@ resource "kubernetes_deployment" "spark" {
       spec {
         container {
           name = "spark"
-          image = "spark_stream_processor:latest"
-          image_pull_policy = "Never"
+          image = "docker.io/${var.docker_username}/spark_stream_processor:latest"
+          image_pull_policy = "Always"
 
           # environment variables
           env {

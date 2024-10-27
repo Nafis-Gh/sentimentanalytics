@@ -31,8 +31,8 @@ resource "kubernetes_deployment" "redditproducer" {
       spec {
         container {
           name = "redditproducer"
-          image = "reddit_producer:latest"
-          image_pull_policy = "Never"
+          image = "docker.io/${var.docker_username}/reddit_producer:latest"
+          image_pull_policy = "Always"
 
           volume_mount {
             name = "credentials"

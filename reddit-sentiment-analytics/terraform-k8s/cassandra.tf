@@ -43,8 +43,8 @@ resource "kubernetes_deployment" "cassandra" {
 
         container {
           name  = "cassandra"
-          image = "cassandra:latest"
-          image_pull_policy = "Never"
+          image = "docker.io/${var.docker_username}/cassandra:latest"
+          image_pull_policy = "Always"
 
           port {
             container_port = 9042
@@ -108,8 +108,8 @@ resource "kubernetes_deployment" "cassandra" {
 
         container {
           name  = "cassandrainit"
-          image = "cassandra:latest"
-          image_pull_policy = "Never"
+          image = "docker.io/${var.docker_username}/cassandra:latest"
+          image_pull_policy = "Always"
 
           command = [
             "/bin/sh",
