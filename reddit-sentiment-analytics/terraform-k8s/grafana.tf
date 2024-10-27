@@ -31,7 +31,7 @@ resource "kubernetes_deployment" "grafana" {
       spec {
         container {
           name  = "grafana"
-          image = "grafana:latest"
+          image = "docker.io/${var.docker_username}/grafana:latest"
 
           port {
             container_port = 3000
@@ -60,7 +60,7 @@ resource "kubernetes_deployment" "grafana" {
             value = "grafana-worldmap-panel,marcusolsson-treemap-panel"
           }
 
-          image_pull_policy = "Never"
+          image_pull_policy = "Always"
         }
 
         restart_policy = "Always"

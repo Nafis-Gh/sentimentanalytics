@@ -7,3 +7,8 @@ variable "namespace" {
   type = string
   default = "redditpipeline"
 }
+
+variable "docker_username" {
+  type = string
+  default = "nafisghasemzadeh"
+}
