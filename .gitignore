@@ -1,5 +1,5 @@
 # virtual environment
-venvs/
+venvs
 
 # website pycache
 Site/__pycache__
