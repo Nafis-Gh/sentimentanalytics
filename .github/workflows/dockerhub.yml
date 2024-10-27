@@ -21,8 +21,9 @@ jobs:
 
       # First Docker Image
       - name: Build Docker Image cassandra
+        working-directory: ./reddit-sentiment-analytics/cassandra
         run: |
-          docker build -t cassandra:latest -f ./reddit-sentiment-analytics/cassandra/Dockerfile .
+          docker build -t cassandra:latest -f Dockerfile .
 
       - name: Tag Docker Image cassandra
         run: |
@@ -34,8 +35,9 @@ jobs:
 
       # Second Docker Image
       - name: Build Docker Image reddit_producer
+        working-directory: ./reddit-sentiment-analytics/reddit_producer
         run: |
-          docker build -t reddit_producer:latest -f ./reddit-sentiment-analytics/reddit_producer/Dockerfile .
+          docker build -t reddit_producer:latest -f Dockerfile .
 
       - name: Tag Docker Image reddit_producer
         run: |
@@ -45,10 +47,11 @@ jobs:
         run: |
           docker push docker.io/${{ secrets.DOCKER_USERNAME }}/reddit_producer:latest
 
-      # 3rd Docker Image
+      # Third Docker Image
       - name: Build Docker Image spark_stream_processor
+        working-directory: ./reddit-sentiment-analytics/spark
         run: |
-          docker build -t spark_stream_processor:latest -f ./reddit-sentiment-analytics/spark/Dockerfile .
+          docker build -t spark_stream_processor:latest -f Dockerfile .
 
       - name: Tag Docker Image spark_stream_processor
         run: |
@@ -57,11 +60,12 @@ jobs:
       - name: Push Docker Image spark_stream_processor to Docker Hub
         run: |
           docker push docker.io/${{ secrets.DOCKER_USERNAME }}/spark_stream_processor:latest
-      
-      # 4th Docker Image
+
+      # Fourth Docker Image
       - name: Build Docker Image grafana
+        working-directory: ./reddit-sentiment-analytics/grafana
         run: |
-          docker build -t grafana:latest -f ./reddit-sentiment-analytics/grafana/Dockerfile .
+          docker build -t grafana:latest -f Dockerfile .
 
       - name: Tag Docker Image grafana
         run: |
