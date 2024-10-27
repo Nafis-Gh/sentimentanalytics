@@ -1,0 +1,519 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "Yc87Z6OJ4wsv"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "tooltip": {
+          "mode": "multi"
+        },
+        "colorMode": "palette-classic"  
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic" 
+          }
+        }
+      },
+      "targets": [
+        {
+          "datasourceId": 1,
+          "queryType": "query",
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT matched_keyword, sum(comment_count) AS frequency FROM reddit.topic_matched_keyword_summary WHERE topic = '$topic' AND country = '$country' AND api_timestamp > $__timeFrom AND api_timestamp < $__timeTo GROUP BY topic, matched_keyword ALLOW FILTERING;"
+        }
+      ],
+      "title": "Frequent Sentiment Keywords by Country",
+      "type": "marcusolsson-treemap-panel"
+    }
+    
+,    
+    {
+      "gridPos": {
+        "h": 12,  
+        "w": 12, 
+        "x": 12,  
+        "y": 0 
+      },
+      "id": 4,   
+      "type": "barchart",  
+      "title": "Sentiment by Country (%)",
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "Yc87Z6OJ4wsv"
+      },
+      "targets": [
+        {
+          "datasourceId": 1,
+          "queryType": "query",
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT country, SUM(positive_count) * 100.0 / SUM(positive_count + negative_count + neutral_count) AS popularity, SUM(negative_count) * 100.0 / SUM(positive_count + negative_count + neutral_count) AS disliked, SUM(neutral_count) * 100.0 / SUM(positive_count + negative_count + neutral_count) AS Neutral FROM reddit.country_sentiment WHERE api_timestamp > $__timeFrom AND api_timestamp < $__timeTo AND country = '$country' AND topic = '$topic'  GROUP BY country, topic ALLOW FILTERING;"
+        }
+      ],
+      "options": {
+    "orientation": "horizontal",
+    "showValue": true,
+    "legend": {
+      "displayMode": "list",
+      "placement": "bottom",
+      "showLegend": true
+    }
+  },
+  "fieldConfig": {
+    "defaults": {
+      "custom": {
+        "barAlignment": 0,
+        "drawStyle": "bar",
+        "lineInterpolation": "smooth",
+        "stacking": {
+          "mode": "none"
+        }
+      },
+      "color": {
+        "mode": "palette-classic"
+      },
+      "mappings": [],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "color": "green",
+            "value": null
+          },
+          {
+            "color": "red",
+            "value": 80
+          }
+        ]
+      }
+    },
+    "overrides": []
+  }
+},
+
+{
+  "datasource": {
+    "type": "hadesarchitect-cassandra-datasource",
+    "uid": "Yc87Z6OJ4wsv"
+  },
+  "gridPos": {
+    "h": 12,
+    "w": 12,
+    "x": 0,
+    "y": 36
+  },
+  "id": 5,
+  "options": {
+    "tooltip": {
+      "mode": "multi"
+    },
+    "displayLabels": ["name", "value"],
+    "colorMode": "continuous",
+    "groupByField": "label",
+    "valueField": "size"
+  },
+  "fieldConfig": {
+    "defaults": {
+      "color": {
+        "mode": "continuous-GrYlRd"
+      },
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          { "color": "green", "value": 0 },
+          { "color": "yellow", "value": 50 },
+          { "color": "red", "value": 100 }
+        ]
+      }
+    }
+  },
+  "targets": [
+    {
+      "datasourceId": 1,
+      "queryType": "query",
+      "rawQuery": true,
+      "refId": "A",
+      "target": "SELECT country AS label, CAST(SUM(total_positive) AS int) AS size FROM reddit.country_sentiment_summary WHERE api_timestamp > $__timeFrom AND api_timestamp < $__timeTo AND topic = '$topic' GROUP BY country ALLOW FILTERING;"
+    }
+  ],
+  "title": "Positive Sentiment Intensity by Country",
+  "type": "marcusolsson-treemap-panel"
+},
+{
+  "datasource": {
+    "type": "hadesarchitect-cassandra-datasource",
+    "uid": "Yc87Z6OJ4wsv"
+  },
+  "gridPos": {
+    "h": 12,
+    "w": 12,
+    "x": 12,
+    "y": 36
+  },
+  "id": 5,
+  "options": {
+    "tooltip": {
+      "mode": "multi"
+    },
+    "displayLabels": ["name", "value"],
+    "colorMode": "continuous",
+    "groupByField": "label",
+    "valueField": "size"
+  },
+  "fieldConfig": {
+    "defaults": {
+      "color": {
+        "mode": "continuous-GrYlRd"
+      },
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          { "color": "green", "value": 0 },
+          { "color": "yellow", "value": 50 },
+          { "color": "red", "value": 100 }
+        ]
+      }
+    }
+  },
+  "targets": [
+    {
+      "datasourceId": 1,
+      "queryType": "query",
+      "rawQuery": true,
+      "refId": "A",
+      "target": "SELECT country AS label, SUM(total_negative) AS size FROM reddit.country_sentiment_summary WHERE api_timestamp > $__timeFrom AND api_timestamp < $__timeTo AND topic = '$topic' GROUP BY country ALLOW FILTERING;"
+    }
+  ],
+  "title": "Negative Sentiment Intensity by Country",
+  "type": "marcusolsson-treemap-panel"
+},
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "Yc87Z6OJ4wsv"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "series",
+            "axisLabel": "Sentiment Count",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1.5,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "columnTime": "api_timestamp",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "Yc87Z6OJ4wsv"
+          },
+          "datasourceId": 1,
+          "keyspace": "reddit",
+          "queryType": "query",
+          "rawQuery": true,
+          "refId": "A",
+          "table": "country_sentiment",
+          "target": "SELECT country, topic, api_timestamp AS time, positive_count AS positive, negative_count AS negative, neutral_count AS neutral FROM reddit.country_sentiment WHERE topic= '${topic}'  AND country = '${country}'  AND api_timestamp > $__timeFrom AND api_timestamp < $__timeTo ALLOW FILTERING;"
+        }
+      ],
+      "title": "Sentiment Status Count",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "hadesarchitect-cassandra-datasource",
+        "uid": "Yc87Z6OJ4wsv"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "series",
+            "axisLabel": "Average Sentiment Score",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "columnTime": "api_timestamp",
+          "datasource": {
+            "type": "hadesarchitect-cassandra-datasource",
+            "uid": "Yc87Z6OJ4wsv"
+          },
+          "datasourceId": 1,
+          "queryType": "query",
+          "rawQuery": true,
+          "refId": "A",
+          "target": "SELECT country,topic, api_timestamp AS time, sentiment_score_avg AS avg_score FROM reddit.country_sentiment WHERE topic= '${topic}'  AND country = '${country}'   AND api_timestamp > $__timeFrom AND api_timestamp < $__timeTo ALLOW FILTERING;"
+        }
+      ],
+      "title": "Average Sentiment Score",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "1s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "datasource": {
+          "type": "yesoreyeram-infinity-datasource",
+          "uid": "infinity-datasource-001"
+        },
+        "definition": "Infinity- (infinity) json",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Topic",
+        "multi": false,
+        "name": "topic",
+        "options": [],
+        "query": {
+          "infinityQuery": {
+            "columns": [],
+            "filters": [],
+            "format": "table",
+            "refId": "variable",
+            "root_selector": "",
+            "source": "url",
+            "type": "json",
+            "url": "http://20.188.226.121:8080/topics",
+            "url_options": {
+              "data": "",
+              "method": "GET"
+            }
+          },
+          "query": "",
+          "queryType": "infinity"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Australia",
+          "value": "Australia"
+        },
+        "datasource": "hadesarchitect-cassandra-datasource",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Country",
+        "multi": false,
+        "name": "country",
+        "options": [
+          {
+            "selected": true,
+            "text": "India",
+            "value": "India"
+          },
+          {
+            "selected": false,
+            "text": "USA",
+            "value": "USA"
+          },
+          {
+            "selected": false,
+            "text": "United Kingdom",
+            "value": "United Kingdom"
+          },
+          {
+            "selected": false,
+            "text": "Australia",
+            "value": "Australia"
+          },
+          {
+            "selected": false,
+            "text": "Russia",
+            "value": "Russia"
+          },
+          {
+            "selected": false,
+            "text": "China",
+            "value": "China"
+          }
+        ],
+        "query": "India,USA,United Kingdom,Australia,Russia,China,Japan",
+        "refresh": 1,
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Subreddit sentiments",
+  "uid": "ee5399a3-330e-4108-9b56-0dd01d9270b2",
+  "version": 1,
+  "weekStart": ""
+}

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analytics</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Style -->
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .site-intro {
+            width: 100%;
+            background-color: #3498db;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .input-container {
+            display: flex;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 5px;
+            border: 1px solid #dce1e7;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        button {
+            background-color: #e74c3c;
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #c0392b;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .floating-button {
+            background-color: #3498db;
+            color: white;
+            font-size: 16px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            animation: vibrate 0.3s infinite;
+            transition: transform 0.3s ease;
+            will-change: transform;
+        }
+
+        .floating-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Different colors for buttons */
+        .floating-button:nth-child(1) {
+            background-color: #3498db;
+        }
+
+        .floating-button:nth-child(2) {
+            background-color: #e67e22;
+        }
+
+        .floating-button:nth-child(3) {
+            background-color: #9b59b6;
+        }
+
+        .floating-button:nth-child(4) {
+            background-color: #2ecc71;
+        }
+
+        .floating-button:nth-child(5) {
+            background-color: #f1c40f;
+        }
+
+        .floating-button:nth-child(6) {
+            background-color: #e74c3c;
+        }
+
+        @keyframes vibrate {
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(1px);
+            }
+
+            50% {
+                transform: translateX(0);
+            }
+
+            75% {
+                transform: translateX(-1px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .loader {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #result {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #resultLink {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        #resultLink:hover {
+            color: #2980b9;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="site-intro">
+        Welcome to public Sentiment Analytics engine
+    </div>
+
+    <div class="container">
+        <h1>Sentiment Analytics</h1>
+
+        <div class="input-container">
+            <input type="text" id="customInputField" placeholder="Type something here...">
+            <button id="customSubmit" onclick="handleTextSubmit(event)">Submit</button>
+        </div>
+	<p style="font-size: 18px; color: #2c3e50; margin: 20px 0;">Below are 5 hot social media topics coming from Chat GPT-4</p>
+        <div class="buttons-container" id="buttonsContainer">
+            <!-- Buttons will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Loading spinner -->
+    <div id="loading" class="fade-in">
+        <p>Processing... Please wait.</p>
+        <div class="loader"></div>
+    </div>
+
+    <!-- Result section -->
+    <div id="result" class="fade-in">
+        <p>Processing complete!</p>
+        <br>
+        <a id="resultLink" href="#" target="_blank"></a>
+    </div>
+	<footer style="width: 100%; background-color: #2c3e50; color: white; text-align: center; padding: 10px; font-size: 16px; position: fixed; bottom: 0;">
+    * This is a POC project analyzing only reddit comments *
+	</footer>
+
+    <script>
+        // Function to fetch data from the API and populate the buttons
+        async function populateButtons() {
+            try {
+                const response = await fetch('/api/options');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+        
+                const buttonsContainer = document.getElementById('buttonsContainer');
+                buttonsContainer.innerHTML = '';
+        
+                // Add buttons dynamically
+                data.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.classList.add('floating-button');
+                    button.textContent = option;
+                    button.onclick = (event) => handleButtonClick(event, option);  // Pass the event and option
+                    buttonsContainer.appendChild(button);
+                });
+        
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+        
+        // Function to handle button click
+        function handleButtonClick(event, option) {
+            event.preventDefault();  // Prevent default button behavior
+            const textInput = document.getElementById('customInputField');
+            textInput.value = option;  // Populate the input field with the button value
+            handleTextSubmit();  // Simulate form submission
+        }
+        
+        // Function to handle text box submission
+        function handleTextSubmit(event) {
+            if (event) event.preventDefault();  // Prevent form submission
+        
+            const textInput = document.getElementById('customInputField').value.trim();  // Get value from text input
+        
+            if (!textInput) {
+                alert("Please enter or select a value!");  // Handle empty input
+                return;
+            }
+        
+            const formData = new FormData();
+            formData.append('customInput', textInput);
+        
+            toggleButtonsDisabled(true);  // Disable buttons
+            submitForm(formData);
+        }
+        
+        // Function to submit form
+        async function submitForm(formData) {
+            // Show the loading spinner
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+        
+            try {
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+        
+                const result = await response.json();
+        
+                // After processing is done, hide the loading spinner
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+        
+                    if (result.status === 'success') {
+                        // Display the result as a clickable URL
+                        const resultLink = document.getElementById('resultLink');
+                        resultLink.href = result.url;
+                        resultLink.textContent = "Click here to view sentiment analytics dashboard";
+                        document.getElementById('result').style.display = 'block';
+        
+                        window.open(result.url, '_blank');  // Open the URL in a new tab
+                    }
+        
+                    toggleButtonsDisabled(false);  // Enable buttons
+                }, 5000);  // Simulate a 5-second processing delay
+        
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                toggleButtonsDisabled(false);  // Enable buttons on error
+            }
+        }
+        
+        // Function to toggle buttons' disabled state
+        function toggleButtonsDisabled(disabled) {
+            document.querySelectorAll('button').forEach(button => {
+                button.disabled = disabled;
+                button.style.opacity = disabled ? 0.5 : 1;  // Change opacity to indicate disabled state visually
+            });
+        }
+        
+        // Initialize buttons on page load
+        document.addEventListener('DOMContentLoaded', populateButtons);
+    </script>
+    
+    
+
+</body>
+
+</html>

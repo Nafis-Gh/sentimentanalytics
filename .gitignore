@@ -1,0 +1,15 @@
+# virtual environment
+venv/
+
+# website pycache
+Site/__pycache__
+
+# Site topic files
+Site/topic/topic.json
+Site/topic/topicstring.txt
+
+# GPT API Key
+Site/secret.txt
+
+# Reddit credentials
+reddit-sentiment-analytics/secrets/credentials.cfg
